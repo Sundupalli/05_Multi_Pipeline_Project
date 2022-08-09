@@ -1,54 +1,44 @@
-node ('master')
- {
-  
-  def mavenHome = tool name: "maven3.6.3"
-  
-      echo "GitHub BranhName ${env.BRANCH_NAME}"
-      echo "Jenkins Job Number ${env.BUILD_NUMBER}"
-      echo "Jenkins Node Name ${env.NODE_NAME}"
-  
-      echo "Jenkins Home ${env.JENKINS_HOME}"
-      echo "Jenkins URL ${env.JENKINS_URL}"
-      echo "JOB Name ${env.JOB_NAME}"
-  
-   //properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')), pipelineTriggers([pollSCM('* * * * *')])])
-  
-  stage("CheckOutCodeGit")
-  {
-   git branch: 'master', credentialsId: '65fb834f-a83b-4fe7-8e11-686245c47a65', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
- }
- 
- stage("Build")
- {
- sh "${mavenHome}/bin/mvn clean package"
- }
- 
-  /*
- stage("ExecuteSonarQubeReport")
- {
- sh "${mavenHome}/bin/mvn sonar:sonar"
- }
- 
- stage("UploadArtifactsintoNexus")
- {
- sh "${mavenHome}/bin/mvn deploy"
- }
- 
-  stage("DeployAppTomcat")
- {
-  sshagent(['423b5b58-c0a3-42aa-af6e-f0affe1bad0c']) {
-    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war  ec2-user@15.206.91.239:/opt/apache-tomcat-9.0.34/webapps/" 
-  }
- }
- 
- stage('EmailNotification')
- {
- mail bcc: 'devopstrainingblr@gmail.com', body: '''Build is over
+node
+{
+def mavenHome = tool name:'maven3.8.6'
 
- Thanks,
- Mithun Technologies,
- 9980923226.''', cc: 'devopstrainingblr@gmail.com', from: '', replyTo: '', subject: 'Build is over!!', to: 'devopstrainingblr@gmail.com'
- }
- */
- 
- }
+     stage('Pull the code')
+     {
+            git branch: 'development', credentialsId: '4ea161c0-f0e2-4e5a-ad7f-28e909d552c0', url: 'https://github.com/Sundupalli/02-maven-web-application.git'
+     }
+
+     stage('Build artifacts')
+     {
+           sh "${mavenHome}/bin/mvn clean package"        
+     }
+
+     stage('Execute SonarQube Report')
+     {
+           sh "${mavenHome}/bin/mvn sonar:sonar"  
+     }
+
+     stage('Uploads Artifacts into Nexus')
+     {
+           sh "${mavenHome}/bin/mvn deploy"  
+     } 
+
+     stage ('Deploy App Into Tomcat')
+     {
+          sshagent(['6eec5fdd-055c-4f1e-a564-4379d617ccfd']) 
+          {
+               sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.6.126.151:/opt/apache-tomcat-9.0.65/webapps"
+          }
+     }
+/*
+     stage ('Send Email Notification')
+     {
+          mail bcc: '', body: '''Hi Reddy Sekhar
+
+Job is done sucessuflly....
+
+Regards,successfully
+Reddy Sekhar
++91 8553322492''', cc: 'reddysekhar050@gmail.com', from: '', replyTo: '', subject: 'Build over', to: 'sendmeanemail208@gmail.com'     
+     }
+*/  
+}
