@@ -34,6 +34,8 @@ def mavenHome = tool name:'maven3.8.6'
      {
           mail bcc: '', body: '''Hi Reddy Sekhar
 
+
+
 Job is done sucessuflly....
 
 Regards,successfully
