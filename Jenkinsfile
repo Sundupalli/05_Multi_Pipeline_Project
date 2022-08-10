@@ -21,7 +21,7 @@ def mavenHome = tool name:'maven3.8.6'
      {
            sh "${mavenHome}/bin/mvn deploy"  
      } 
-
+/*
      stage ('Deploy App Into Tomcat')
      {
           sshagent(['6eec5fdd-055c-4f1e-a564-4379d617ccfd']) 
@@ -29,7 +29,7 @@ def mavenHome = tool name:'maven3.8.6'
                sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.6.126.151:/opt/apache-tomcat-9.0.65/webapps"
           }
      }
-/*
+
      stage ('Send Email Notification')
      {
           mail bcc: '', body: '''Hi Reddy Sekhar
